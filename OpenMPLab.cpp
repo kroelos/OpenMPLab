@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <stdio.h>
 #include <omp.h>
 #include <time.h>
 #include <locale.h>
@@ -23,9 +24,6 @@ int main(int argc, char** argv) {
     int mA = 0;
     int nB = 0;
     int mB = 0;
-    int nmax = 0;
-    int mmax = 0;
-    int mmin = 0;
     int threadsNum = 0;
     printf("введите количество строк в первой матрице(целое число,большее единицы):\n");
     scanf_s("%d", &nA);
@@ -45,15 +43,7 @@ int main(int argc, char** argv) {
         printf("введите количество столбцов в первой матрице(целое число,большее единицы):\n");
         scanf_s("%d", &mA);
     }
-    printf("введите количество строк во второй матрице(целое число,большее единицы):\n");
-    scanf_s("%d", &nB);
-    while (nB <= 1) {
-        while (getchar() != '\n') {
-            continue;
-        }
-        printf("введите количество строк во второй матрице(целое число,большее единицы):\n");
-        scanf_s("%d", &nB);
-    }
+    nB = mA;//Две матрицы можно перемножить между собой тогда и только тогда, когда количество столбцов первой матрицы(матрицы A) равно количеству строк второй матрицы(матрицы B).
     printf("введите количество столбцов во второй матрице(целое число,большее единицы):\n");
     scanf_s("%d", &mB);
     while (mB <= 1) {
@@ -72,20 +62,7 @@ int main(int argc, char** argv) {
         printf("введите количество параллельных потоков(целое число,большее единицы):\n");
         scanf_s("%d", &threadsNum);
     }
-    if (nA > nB) {
-        nmax = nA;
-    }
-    else {
-        nmax = nB;
-    }
-    if (mA > mB) {
-        mmax = mA;
-        mmin = mB;
-    }
-    else {
-        mmax = mB;
-        mmin = mA;
-    }
+    
     //Первая матрица из nA строк и mA столбцов(матрица A)
     int** matr1;
     //Вторая матрица из nB строк и mB столбцов(матрица B)
@@ -104,52 +81,30 @@ int main(int argc, char** argv) {
     randomMatr(matr1, nA, mA);
     randomMatr(matr2, nB, mB);
     
-    int** result = (int**)malloc(sizeof(int*) * nmax);;
-    for (int i = 0; i < nmax; i++) {
-        result[i] = (int*)malloc(sizeof(int) * mmax);
-    }
-    printf("первая матрица:\n");
+    int** result = (int**)malloc(sizeof(int*) * nA);;
     for (int i = 0; i < nA; i++) {
-        for (int j = 0; j < mA; j++) {
-            printf("%d ", matr1[i][j]);
-        }
-        printf("\n");
+        result[i] = (int*)malloc(sizeof(int) * mB);
     }
-    printf("вторая матрица:\n");
-    for (int i = 0; i < nB; i++) {
-        for (int j = 0; j < mB; j++) {
-            printf("%d ", matr2[i][j]);
-        }
-        printf("\n");
-    }
+    
    
     
     int i, j, k;
-   
+    
     unsigned int start_time = clock();
 #pragma omp parallel for shared(matr1, matr2, result) private(i, j, k)  num_threads(threadsNum)
-    for (i = 0; i < nmax; i++) {
+    for (i = 0; i < nA; i++) {
         
-        for (j = 0; j < mmax; j++) {
+        for (j = 0; j < mB; j++) {
             result[i][j] = 0;
-            for (k = 0; k < mmin; k++) {
+            for (k = 0; k < nB; k++) {
                 result[i][j] += (matr1[i][k] * matr2[k][j]);
             }
         }
     }
     unsigned int end_time = clock();
-    printf("Результат:\n");
-    for (i = 0; i < nmax; i++) {
-
-        for (j = 0; j < mmax; j++) {
-            printf("%d ", result[i][j]);
-            
-        }
-        printf("\n");
-    }
     
     unsigned int search_time = end_time - start_time;
     
-    printf("Время - %d", search_time);
+    printf("Время перемножения - %d миллисекунд  кол-во параллельных потоков - %d", search_time ,threadsNum);
     return 0;
 }

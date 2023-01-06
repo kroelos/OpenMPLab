@@ -1,3 +1,3 @@
 ﻿  OpenMPLab.cpp
-C:\Users\Hiperion\source\repos\OpenMPLab\OpenMPLab.cpp(20,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\Hiperion\source\repos\OpenMPLab\OpenMPLab.cpp(21,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
   OpenMPLab.vcxproj -> C:\Users\Hiperion\source\repos\OpenMPLab\Debug\OpenMPLab.exe
