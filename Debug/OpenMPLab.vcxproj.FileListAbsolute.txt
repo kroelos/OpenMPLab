@@ -1,0 +1,2 @@
+C:\Users\Hiperion\source\repos\OpenMPLab\Debug\OpenMPLab.exe
+C:\Users\Hiperion\source\repos\OpenMPLab\Debug\OpenMPLab.pdb
